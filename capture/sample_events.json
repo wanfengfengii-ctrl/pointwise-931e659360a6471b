@@ -1,0 +1,18 @@
+[
+  {"kind":"response","session_id":"tab-a","request_id":"r","url":"https://records.example/start","status":302,"headers":[["Location","https://cdn.example/final"],["X-Base","a"],["X-Base","b"]],"expects_extra":true},
+  {"kind":"extra","session_id":"tab-b","request_id":"r","headers":[["X-Early","other-session"]]},
+  {"kind":"response","session_id":"tab-a","request_id":"r","url":"https://cdn.example/final","status":200,"headers":[["X-Base","final"]],"expects_extra":true},
+  {"kind":"response","session_id":"tab-b","request_id":"r","url":"https://other.example/item","status":200,"headers":[],"expects_extra":true},
+  {"kind":"extra","session_id":"tab-a","request_id":"r","headers":[["X-Redirect","late-302"],["X-Redirect","second"]]},
+  {"kind":"body","session_id":"tab-a","request_id":"r","hex":"4142"},
+  {"kind":"body","session_id":"tab-b","request_id":"r","hex":"5859"},
+  {"kind":"finished","session_id":"tab-a","request_id":"r"},
+  {"kind":"finished","session_id":"tab-b","request_id":"r"},
+  {"kind":"extra","session_id":"tab-a","request_id":"r","headers":[["X-Final","after-finish"]]},
+  {"kind":"response","session_id":"tab-c","request_id":"no-extra","url":"https://empty.example/item","status":204,"headers":[],"expects_extra":false},
+  {"kind":"body","session_id":"tab-c","request_id":"no-extra","hex":""},
+  {"kind":"finished","session_id":"tab-c","request_id":"no-extra"},
+  {"kind":"response","session_id":"tab-d","request_id":"broken","url":"https://broken.example/item","status":302,"headers":[["Location","https://broken.example/next"]],"expects_extra":true},
+  {"kind":"failed","session_id":"tab-d","request_id":"broken","reason":"TLS handshake failed"},
+  {"kind":"extra","session_id":"tab-d","request_id":"broken","headers":[["X-Trace","confirmed-before-failure"]]}
+]

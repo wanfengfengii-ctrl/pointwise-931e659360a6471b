@@ -1,0 +1,37 @@
+{
+  "single": {
+    "url": "https://records.example/item",
+    "session_id": "legacy-a",
+    "request_id": "r1",
+    "hops": [{"url": "https://records.example/item", "status": 200, "headers": [["Content-Type", "text/plain"]], "extra_headers": null}],
+    "body_hex": "68656c6c6f00e4b8ad",
+    "failure": null
+  },
+  "empty": {
+    "url": "https://records.example/empty",
+    "session_id": "legacy-a",
+    "request_id": "r2",
+    "hops": [{"url": "https://records.example/empty", "status": 204, "headers": [], "extra_headers": []}],
+    "body_hex": "",
+    "failure": null
+  },
+  "redirect": {
+    "url": "https://records.example/start",
+    "session_id": "legacy-b",
+    "request_id": "shared",
+    "hops": [
+      {"url": "https://records.example/start", "status": 302, "headers": [["Location", "https://cdn.example/final"], ["X-Route", "one"], ["X-Route", "two"]], "extra_headers": [["Set-Cookie", "route=a"], ["Set-Cookie", "route=b"]]},
+      {"url": "https://cdn.example/final", "status": 200, "headers": [["X-Checksum", "base-final"], ["X-Checksum", "base-again"]], "extra_headers": [["X-Checksum", "extra-final"], ["X-Checksum", "extra-again"]]}
+    ],
+    "body_hex": "66696e616c006279746573",
+    "failure": null
+  },
+  "failed": {
+    "url": "https://records.example/start",
+    "session_id": "legacy-c",
+    "request_id": "shared",
+    "hops": [{"url": "https://records.example/start", "status": 302, "headers": [["Location", "https://cdn.example/final"]], "extra_headers": [["X-Trace", "redirect-confirmed"]]}],
+    "body_hex": null,
+    "failure": "connection reset after redirect"
+  }
+}
