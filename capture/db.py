@@ -52,7 +52,9 @@ class FaultPlan:
 
     def arm(self, stage, after=0):
         if stage not in {'body.before', 'body.after', 'archive.after',
-                         'jobs.after', 'before_commit'}:
+                         'jobs.after', 'before_commit', 'migration.after',
+                         'v2.event.before', 'v2.event.after',
+                         'v2.seal.before', 'v2.seal.after'}:
             raise ValueError('unknown fault stage')
         if type(after) is not int or after < 0:
             raise ValueError('after must be a nonnegative integer')
@@ -87,7 +89,7 @@ class Database:
                         "INSERT INTO meta VALUES ('storage_version','1')")
             version = self.connection.execute(
                 "SELECT value FROM meta WHERE key='storage_version'").fetchone()
-            if version is None or version[0] != '1':
+            if version is None or version[0] not in ('1', '2'):
                 raise InvalidState('unsupported storage version')
         except BaseException:
             self.connection.close()

@@ -27,3 +27,7 @@ BodyChunk 仅用于输入 Player 的确定性样本，data 为 bytes。Player.pl
 Player 是原始事件传输端口，仅校验事件类型、非空键和样本正文类型，不为消费方检查整链语义、不等待齐备、不编号跳次、不持久化。可用它播放不完整前缀来观察边界。`from_records(records)` 将 JSON 事件列表转为 Player，kind 为 response/extra/body/finished/failed；body 用 hex，其他字段同上述事件。错误样本字段抛 PortError。
 
 capture/sample_events.json 的明确事实：tab-a/r 的 302 附加头在 200 响应之后到达，200 附加头在 Finished 后到达；tab-b/r 的附加头早于它的响应；tab-c/no-extra 的正文存在但为空且不需要附加头；tab-d/broken 保留重定向和失败原因，附加头在 Failed 后到达。SDK1 与 SDK2 样本分别编写，并非由某个适配器互相生成。
+
+## 消费方契约（capture_v2）
+
+capture_v2 把 SDK2 事件序列组装为与 SDK1 同形的链证据。链键为 (session_id,request_id)，Response 到达顺序即跳次；ExtraHeaders 只按该链 expects_extra=True 跳次顺序归属，与到达位置无关；BodyChunk 在回调内复制，跨回调缓冲复用不可依赖。Finished/Failed 表示网络结束而非证据齐备，封存另需全部声明附加头（成功链还需正文块）。每个事件边界可中断，持久 cursor 支持重开续采；已封存链不重发。账户表、旧查询与 v1 历史的兼容规则见 README「SDK2 事件采集与升级」。本文件只描述端口事实，不描述存储实现。
